@@ -1,4 +1,3 @@
-import { sql } from 'drizzle-orm';
 import { text, serial, pgTable } from 'drizzle-orm/pg-core';
 
 export const companies = pgTable('companies', {

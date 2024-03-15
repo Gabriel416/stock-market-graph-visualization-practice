@@ -1,19 +1,10 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import { CompanyGraph } from '@/components/CompanyGraph';
+import React from 'react';
+import { useGetCompanies } from '@/hooks/useGetCompanies';
+import { GraphDashboard } from '@/components/GraphDashboard';
 
 export default function Home() {
-  const [companies, setCompanies] = useState([]);
-  useEffect(() => {
-    async function getCompanies() {
-      const res = await fetch('/api/companies');
+  const [companies] = useGetCompanies();
 
-      const { companies } = await res.json();
-      setCompanies(companies);
-    }
-
-    getCompanies();
-  }, []);
-
-  return <CompanyGraph companies={companies} />;
+  return <GraphDashboard companies={companies} />;
 }

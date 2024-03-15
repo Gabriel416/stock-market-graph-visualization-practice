@@ -1,15 +1,4 @@
-export type SectorType =
-  | 'Industrials'
-  | 'Health Care'
-  | 'Information Technology'
-  | 'Utilities'
-  | 'Financials'
-  | 'Materials'
-  | 'Consumer Discretionary'
-  | 'Real Estate'
-  | 'Communication Services'
-  | 'Consumer Staples'
-  | 'Energy';
+import { SectorType } from './types';
 
 export const sectors: SectorType[] = [
   'Industrials',
@@ -24,28 +13,6 @@ export const sectors: SectorType[] = [
   'Consumer Staples',
   'Energy',
 ];
-
-export type ReactFlowNode = {
-  id: string;
-  data: { [key: string]: any };
-  position: { x: number; y: number };
-  parentNode: string;
-};
-
-export type ReactFlowEdge = {
-  id: string;
-  source: string;
-  target: string;
-  parentNode?: string;
-  animated?: boolean;
-};
-
-type CompanySectorMapObj = {
-  [key in SectorType]: {
-    nodes: ReactFlowNode[];
-    edges: ReactFlowEdge[];
-  };
-};
 
 export const nodeEdgePosition = { x: 0, y: 0 };
 

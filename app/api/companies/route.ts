@@ -1,7 +1,7 @@
-import { NextResponse, NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getCompanies } from '@/db/db';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   const companies = await getCompanies();
 
   return NextResponse.json({ companies });

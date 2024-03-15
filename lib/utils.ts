@@ -1,115 +1,50 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { SectorType, nodeEdgePosition, sectors } from '@/constants';
-
-type CompanyType = {
-  id: number;
-  ticker: string;
-  name: string;
-  sector: SectorType;
-  headquarters: string;
-  date_added: string;
-};
+import ELK, { ElkNode, ElkExtendedEdge } from 'elkjs/lib/elk.bundled.js';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-function random_rgba() {
-  const o = Math.round,
-    r = Math.random,
-    s = 255;
+export function random_rgba() {
+  const o = Math.round;
+  const r = Math.random;
+  const s = 255;
   return 'rgba(' + o(r() * s) + ',' + o(r() * s) + ',' + o(r() * s) + ',' + 0.2 + ')';
 }
 
-export function getNodesAndEdges(companies: CompanyType[]) {
-  const { sectorNodes, sectorEdges } = getSectorNodesAndEdges();
-  const { companyNodes, companyEdges } = getCompanyNodesAndEdges(companies);
-  return {
-    nodes: [...sectorNodes, ...companyNodes],
-    edges: [...sectorEdges, ...companyEdges],
+export function getLayoutedElements(nodes: ElkNode[], edges: ElkExtendedEdge[], options = {}) {
+  const elk = new ELK();
+  const graph = {
+    id: 'root',
+    layoutOptions: options,
+    children: nodes.map((node) => ({
+      ...node,
+      width: 150,
+      height: 50,
+    })),
+    edges: edges,
   };
-}
 
-function getSectorNodesAndEdges() {
-  const sectorNodes = sectors.map((sectorName: SectorType) => ({
-    id: sectorName,
-    data: { label: sectorName },
-    position: nodeEdgePosition,
-    style: { backgroundColor: random_rgba(), width: 200, height: 140 },
-  }));
-  const sectorNodeCopy = [...sectorNodes];
-  const sectorEdges = [];
+  return elk
+    .layout(graph)
+    .then((layoutedGraph) => {
+      if (layoutedGraph) {
+        return {
+          nodes: layoutedGraph?.children?.map((node) => ({
+            ...node,
+            // React Flow expects a position property on the node instead of `x`
+            // and `y` fields.
+            position: { x: node.x, y: node.y },
+          })),
 
-  while (sectorNodeCopy.length) {
-    const sourceNode = sectorNodeCopy.shift();
-    const targetNode = sectorNodeCopy[0];
-
-    if (sourceNode && targetNode) {
-      sectorEdges.push({
-        id: `${sourceNode.id}-${targetNode.id}`,
-        source: sourceNode.id,
-        target: targetNode.id,
-        animated: true,
-      });
-    }
-  }
-
-  return {
-    sectorNodes,
-    sectorEdges,
-  };
-}
-
-function getCompanyNodesAndEdges(companies: CompanyType[]) {
-  const companyNodes = [];
-  const companyEdges = [];
-  const companySectorMap = {};
-
-  sectors.forEach((sectorName) => {
-    companySectorMap[sectorName] = {
-      nodes: [],
-      edges: [],
-    };
-  });
-
-  companies.forEach((company) => {
-    const { ticker, sector, name } = company;
-    companySectorMap[sector].nodes.push({
-      id: ticker,
-      data: { label: `${name} (${ticker})`, ...company },
-      position: nodeEdgePosition,
-      parentNode: sector,
-    });
-  });
-
-  for (const property in companySectorMap) {
-    const sectorCompanyNodes = companySectorMap[property as SectorType].nodes;
-    const sectorCompanyEdges = companySectorMap[property as SectorType].edges;
-    const sectorCompanyNodeCopy = [...sectorCompanyNodes];
-
-    while (sectorCompanyNodeCopy.length) {
-      const sourceNode = sectorCompanyNodeCopy.shift();
-      const targetNode = sectorCompanyNodeCopy[0];
-
-      sectorCompanyEdges.push({
-        id: `${sourceNode.data.sector}-${sourceNode.id}`,
-        source: sourceNode.data.sector,
-        target: sourceNode.id,
-      });
-
-      if (sourceNode && targetNode) {
-        sectorCompanyEdges.push({
-          id: `${sourceNode.id}-${targetNode.id}`,
-          source: sourceNode.id,
-          target: targetNode.id,
-        });
+          edges: layoutedGraph.edges,
+        };
       }
-    }
+    })
+    .catch(console.error);
+}
 
-    companyNodes.push(...sectorCompanyNodes);
-    companyEdges.push(...sectorCompanyEdges);
-  }
-
-  return { companyNodes, companyEdges };
+export function trimAndLowerCase(str: string) {
+  return str.toLowerCase().replace(/\s/g, '');
 }
