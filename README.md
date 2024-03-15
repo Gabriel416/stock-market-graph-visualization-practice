@@ -4,7 +4,7 @@ This project lets a user visualize the S&P 500 companies by viewing company node
 
 ## Screenshots
 
-![App Screenshot](https://postimg.cc/2L8yySV8)
+<img src="graph-visualization-screenshot.png" alt="preview screenshot of app" />
 
 ## Technologies Used
 
@@ -12,7 +12,7 @@ This project was created using Next.js, ReactFlow, TypeScript, PostgreSQL, Tailw
 
 ## Demo
 
-Live hosted version can be found here
+A live hosted version can be found <a href="https://stock-market-graph-visualization.vercel.app/">here</a>
 
 ## Run Locally
 
