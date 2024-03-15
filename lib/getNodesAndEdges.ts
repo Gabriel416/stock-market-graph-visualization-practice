@@ -1,14 +1,6 @@
-import { SectorType, nodeEdgePosition, sectors } from '@/constants';
+import { nodeEdgePosition, sectors } from '@/constants';
+import { CompanySectorMapObj, SectorType, CompanyType } from '@/types';
 import { random_rgba } from './utils';
-
-type CompanyType = {
-  id: number;
-  ticker: string;
-  name: string;
-  sector: SectorType;
-  headquarters: string;
-  date_added: string;
-};
 
 export function getNodesAndEdges(companies: CompanyType[]) {
   const { sectorNodes, sectorEdges } = getSectorNodesAndEdges();
@@ -50,9 +42,7 @@ function getSectorNodesAndEdges() {
 }
 
 function getCompanyNodesAndEdges(companies: CompanyType[]) {
-  const companyNodes = [];
-  const companyEdges = [];
-  const companySectorMap = {};
+  const companySectorMap: CompanySectorMapObj = {};
 
   sectors.forEach((sectorName) => {
     companySectorMap[sectorName] = {
@@ -71,6 +61,12 @@ function getCompanyNodesAndEdges(companies: CompanyType[]) {
     });
   });
 
+  return aggregateCompanyNodesAndEdges(companySectorMap);
+}
+
+function aggregateCompanyNodesAndEdges(companySectorMap: CompanySectorMapObj) {
+  const companyNodes = [];
+  const companyEdges = [];
   for (const property in companySectorMap) {
     const sectorCompanyNodes = companySectorMap[property as SectorType].nodes;
     const sectorCompanyEdges = companySectorMap[property as SectorType].edges;
@@ -80,11 +76,13 @@ function getCompanyNodesAndEdges(companies: CompanyType[]) {
       const sourceNode = sectorCompanyNodeCopy.shift();
       const targetNode = sectorCompanyNodeCopy[0];
 
-      sectorCompanyEdges.push({
-        id: `${sourceNode.data.sector}-${sourceNode.id}`,
-        source: sourceNode.data.sector,
-        target: sourceNode.id,
-      });
+      if (sourceNode) {
+        sectorCompanyEdges.push({
+          id: `${sourceNode.data.sector}-${sourceNode.id}`,
+          source: sourceNode.data.sector,
+          target: sourceNode.id,
+        });
+      }
 
       if (sourceNode && targetNode) {
         sectorCompanyEdges.push({
