@@ -25,7 +25,7 @@ Clone the project
 Go to the project directory
 
 ```bash
-  cd stock-market-graph-visualization
+  cd stock-market-graph-visualization-practice
 ```
 
 Install dependencies
