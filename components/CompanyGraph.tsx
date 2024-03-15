@@ -1,6 +1,5 @@
 'use client';
-import ELK from 'elkjs/lib/elk.bundled.js';
-import React, { useCallback, useLayoutEffect } from 'react';
+import React, { useState, useCallback, useLayoutEffect } from 'react';
 import ReactFlow, {
   ReactFlowProvider,
   Panel,
@@ -10,10 +9,12 @@ import ReactFlow, {
   Background,
   Controls,
 } from 'reactflow';
-import 'reactflow/dist/style.css';
 import { SectorType, elkOptions, ReactFlowEdge, ReactFlowNode } from '@/constants';
 import { Button } from './ui/button';
+import { Input } from './ui/input';
 import { getNodesAndEdges } from '@/lib/utils';
+import ELK from 'elkjs/lib/elk.bundled.js';
+import 'reactflow/dist/style.css';
 
 type CompanyType = {
   id: number;
@@ -31,18 +32,11 @@ interface CompanyGraphProps {
 const elk = new ELK();
 
 const getLayoutedElements = (nodes, edges, options = {}) => {
-  const isHorizontal = options?.['elk.direction'] === 'RIGHT';
   const graph = {
     id: 'root',
     layoutOptions: options,
     children: nodes.map((node) => ({
       ...node,
-      // Adjust the target and source handle positions based on the layout
-      // direction.
-      targetPosition: isHorizontal ? 'left' : 'top',
-      sourcePosition: isHorizontal ? 'right' : 'bottom',
-
-      // Hardcode a width and height for elk to use when layouting.
       width: 150,
       height: 50,
     })),
@@ -67,6 +61,7 @@ const getLayoutedElements = (nodes, edges, options = {}) => {
 function LayoutFlow({ companies }: CompanyGraphProps) {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [filterInput, setFilterInput] = useState('');
   const { fitView } = useReactFlow();
 
   const onLayout = useCallback(
@@ -85,16 +80,18 @@ function LayoutFlow({ companies }: CompanyGraphProps) {
     [nodes, edges]
   );
 
-  // Calculate the initial layout on mount.
   useLayoutEffect(() => {
-    const { nodes, edges } = getNodesAndEdges(companies);
+    const filteredCompanies = companies.filter(({ name }) =>
+      name.toLowerCase().replace(/\s/g, '').includes(filterInput.toLowerCase().replace(/\s/g, ''))
+    );
+    const { nodes, edges } = getNodesAndEdges(filteredCompanies);
 
     onLayout({
       direction: 'DOWN',
       nodes,
       edges,
     });
-  }, [companies]);
+  }, [companies, filterInput]);
 
   return (
     <ReactFlow
@@ -104,17 +101,15 @@ function LayoutFlow({ companies }: CompanyGraphProps) {
       onEdgesChange={onEdgesChange}
       fitView
     >
-      <Panel position='top-right'>
-        <Button onClick={() => onLayout({ direction: 'DOWN', nodes, edges })}>
-          vertical layout
-        </Button>
-
-        <Button onClick={() => onLayout({ direction: 'RIGHT', nodes, edges })}>
-          horizontal layout
-        </Button>
+      <Panel className='w-[400px]' position='top-right'>
+        <Input
+          onChange={(e) => setFilterInput(e.target.value)}
+          placeholder='Search Companies...'
+          className='w-full py-6'
+        />
       </Panel>
       <Controls />
-      <Background />
+      <Background className='bg-blue-5  0' />
     </ReactFlow>
   );
 }

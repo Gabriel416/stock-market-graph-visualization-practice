@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { SectorType, nodeEdgePosition, sectors, companySectorMap } from '@/constants';
+import { SectorType, nodeEdgePosition, sectors } from '@/constants';
 
 type CompanyType = {
   id: number;
@@ -13,6 +13,13 @@ type CompanyType = {
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+function random_rgba() {
+  const o = Math.round,
+    r = Math.random,
+    s = 255;
+  return 'rgba(' + o(r() * s) + ',' + o(r() * s) + ',' + o(r() * s) + ',' + 0.2 + ')';
 }
 
 export function getNodesAndEdges(companies: CompanyType[]) {
@@ -29,7 +36,7 @@ function getSectorNodesAndEdges() {
     id: sectorName,
     data: { label: sectorName },
     position: nodeEdgePosition,
-    style: { backgroundColor: 'rgba(255, 0, 0, 0.2)', width: 200, height: 200 },
+    style: { backgroundColor: random_rgba(), width: 200, height: 140 },
   }));
   const sectorNodeCopy = [...sectorNodes];
   const sectorEdges = [];
@@ -57,7 +64,16 @@ function getSectorNodesAndEdges() {
 function getCompanyNodesAndEdges(companies: CompanyType[]) {
   const companyNodes = [];
   const companyEdges = [];
-  companies.map((company) => {
+  const companySectorMap = {};
+
+  sectors.forEach((sectorName) => {
+    companySectorMap[sectorName] = {
+      nodes: [],
+      edges: [],
+    };
+  });
+
+  companies.forEach((company) => {
     const { ticker, sector, name } = company;
     companySectorMap[sector].nodes.push({
       id: ticker,
@@ -76,17 +92,17 @@ function getCompanyNodesAndEdges(companies: CompanyType[]) {
       const sourceNode = sectorCompanyNodeCopy.shift();
       const targetNode = sectorCompanyNodeCopy[0];
 
+      sectorCompanyEdges.push({
+        id: `${sourceNode.data.sector}-${sourceNode.id}`,
+        source: sourceNode.data.sector,
+        target: sourceNode.id,
+      });
+
       if (sourceNode && targetNode) {
         sectorCompanyEdges.push({
           id: `${sourceNode.id}-${targetNode.id}`,
           source: sourceNode.id,
           target: targetNode.id,
-        });
-
-        sectorCompanyEdges.push({
-          id: `${sourceNode.data.sector}-${sourceNode.id}`,
-          source: sourceNode.data.sector,
-          target: sourceNode.id,
         });
       }
     }

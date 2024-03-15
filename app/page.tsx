@@ -1,6 +1,5 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-
 import { CompanyGraph } from '@/components/CompanyGraph';
 
 export default function Home() {
@@ -15,5 +14,6 @@ export default function Home() {
 
     getCompanies();
   }, []);
+
   return <CompanyGraph companies={companies} />;
 }

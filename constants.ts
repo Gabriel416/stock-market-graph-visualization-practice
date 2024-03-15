@@ -47,57 +47,10 @@ type CompanySectorMapObj = {
   };
 };
 
-export const companySectorMap: CompanySectorMapObj = {
-  Industrials: {
-    nodes: [],
-    edges: [],
-  },
-  'Health Care': {
-    nodes: [],
-    edges: [],
-  },
-  'Information Technology': {
-    nodes: [],
-    edges: [],
-  },
-  Utilities: {
-    nodes: [],
-    edges: [],
-  },
-  Financials: {
-    nodes: [],
-    edges: [],
-  },
-  Materials: {
-    nodes: [],
-    edges: [],
-  },
-  'Consumer Discretionary': {
-    nodes: [],
-    edges: [],
-  },
-  'Real Estate': {
-    nodes: [],
-    edges: [],
-  },
-  'Communication Services': {
-    nodes: [],
-    edges: [],
-  },
-  'Consumer Staples': {
-    nodes: [],
-    edges: [],
-  },
-  Energy: {
-    nodes: [],
-    edges: [],
-  },
-};
-
 export const nodeEdgePosition = { x: 0, y: 0 };
 
 export const elkOptions = {
   'elk.algorithm': 'box',
-  'elk.layered.spacing.nodeNodeBetweenLayers': '10',
-  'elk.spacing.nodeNode': '10',
+  'elk.layered.spacing.nodeNodeBetweenLayers': '25',
+  'elk.spacing.nodeNode': '25',
 };
