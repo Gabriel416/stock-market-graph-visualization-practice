@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
-interface CompanyData {
-  id: number;
-  ticker: string;
-  name: string;
-  sector: string;
-  headquarters: string;
-  date_added: string;
-}
+import { CompanyType } from '@/types';
 
 interface UseGetStockInfoParams {
   setSideBarOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -16,7 +8,7 @@ interface UseGetStockInfoParams {
 
 export const useGetStockInfo = ({ setSideBarOpen, id }: UseGetStockInfoParams) => {
   const [loading, setLoading] = useState(false);
-  const [companyData, setCompanyData] = useState<CompanyData | null>(null);
+  const [companyData, setCompanyData] = useState<CompanyType | null>(null);
   useEffect(() => {
     async function getStockInfo() {
       try {
