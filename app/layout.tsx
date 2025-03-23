@@ -28,9 +28,7 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
-        <Navbar />
         {children}
-        <Footer />
       </body>
     </html>
   );

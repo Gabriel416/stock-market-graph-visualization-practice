@@ -39,8 +39,9 @@ function LayoutFlow({ companies }: CompanyGraphProps) {
         ({ nodes: layoutedNodes, edges: layoutedEdges }) => {
           setNodes(layoutedNodes);
           setEdges(layoutedEdges);
-
-          window.requestAnimationFrame(() => fitView());
+          if (filterInput?.length) {
+            window.requestAnimationFrame(() => fitView());
+          }
         }
       );
     },
