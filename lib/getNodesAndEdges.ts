@@ -16,7 +16,7 @@ function getSectorNodesAndEdges() {
     id: sectorName,
     data: { label: sectorName },
     position: nodeEdgePosition,
-    style: { backgroundColor: random_rgba(), width: 200, height: 140 },
+    style: { backgroundColor: random_rgba() },
   }));
   const sectorNodeCopy = [...sectorNodes];
   const sectorEdges = [];

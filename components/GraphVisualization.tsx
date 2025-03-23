@@ -39,7 +39,7 @@ export const GraphVisualization = ({
         }}
         fitView
       >
-        <Panel className='w-[400px]' position='top-right'>
+        <Panel className='w-[350px]' position='top-right'>
           <Input
             onChange={(e) => setFilterInput(e.target.value)}
             placeholder='Search Companies...'
