@@ -28,7 +28,7 @@ export const GraphVisualization = ({
   setFilterInput,
 }: GraphVisualizationProps) => {
   return (
-    <div className='h-full w-full'>
+    <div className='h-[95vh] w-full'>
       <ReactFlow
         nodes={nodes}
         edges={edges}
